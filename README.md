@@ -1,66 +1,123 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Opis Zadania
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### 1. Command do Importu Danych
 
-## About Laravel
+Zaimplementuj polecenie konsolowe w Laravel, które wczyta dane pacjentów i wyniki ich badań z pliku CSV (results.csv) o następującym formacie:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| patientId | patientName | patientSurname | patientSex | patientBirthDate | orderId | testName | testValue | testReference |
+|-----------|-------------|----------------|------------|------------------|---------|----------|-----------|---------------|
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Importowane dane mają zostać zapisane w bazie danych (tabele pacjentów, zamówień i wyników badań).
+- **Wymagania techniczne:**
+    - Obsługa błędów w przypadku niekompletnego lub wadliwego pliku CSV.
+    - Logowanie poprawnie zaimportowanych rekordów oraz błędów do pliku.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+### 2. Stworzenie API
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Endpointy:**
+    - `POST /api/login` – logowanie użytkownika na podstawie loginu (połączenie imienia i nazwiska pacjenta, np. `PiotrKowalski`) i hasła (data urodzenia pacjenta, np. `1983-04-12`). Zwraca token JWT.
+    - `GET /api/results` – zwraca dane zalogowanego pacjenta oraz wyniki jego badań na podstawie tokenu JWT.
+      Endpoint powinien zwrócić dane w następującej postaci:
+```json
+{
+  "patient": {
+    "id": 10,
+    "name": "John",
+    "surname": "Smith",
+    "sex": "m",
+    "birthDate": "2021-01-01"
+  },
+  "orders": [
+    {
+      "orderId": "20",
+      "results": [
+        {
+          "name": "foo",
+          "value": "1",
+          "reference": "1-2"
+        },
+        {
+          "name": "bar",
+          "value": "2",
+          "reference": "1-2"
+        }
+      ]
+    },
+    {
+      "orderId": "21",
+      "results": [
+        {
+          "name": "foo",
+          "value": "1",
+          "reference": "1-2"
+        },
+        {
+          "name": "bar",
+          "value": "2",
+          "reference": "1-2"
+        }
+      ]
+    }
+  ]
+}
+```
+- **Dodatkowe wymagania:**
+    - Autoryzacja za pomocą tokenu JWT.
+    - Obsługa błędów (401 dla nieautoryzowanych żądań, 404 dla braku danych).
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 3. Frontend (Vue.js)
 
-## Laravel Sponsors
+- **Funkcjonalności:**
+    - **Logowanie użytkownika:**
+        - Formularz logowania (login: imię + nazwisko pacjenta, hasło: data urodzenia).
+        - Po pomyślnym zalogowaniu, użytkownik zostaje przekierowany do widoku z wynikami badań.
+    - **Podgląd danych pacjenta i wyników badań:**
+        - Wyświetlanie szczegółowych informacji o pacjencie.
+        - Lista wyników badań (nazwa badania, wartość, wartość referencyjna).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **Wymagania techniczne:**
+    - Przechowywanie tokenu JWT w LocalStorage.
+    - Automatyczne wylogowanie po wygaśnięciu tokenu (nice to have).
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 4. Baza Danych
 
-## Contributing
+- Przygotuj schemat bazy danych (PostgreSQL lub MySQL), który obsłuży:
+    - Pacjentów.
+    - Zamówienia (orderId) i wyniki badań.
+- Zaimplementuj migracje w Laravel.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+### 5. CI/CD
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Przygotuj plik konfiguracyjny dla GitLab CI/CD, który:
+    - Uruchamia testy jednostkowe i integracyjne dla API.
+    - Buduje aplikację frontendową (nice to have).
+    - Buduje i wypycha obraz Docker (nice to have).
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 6. Docker
 
-## License
+- Opracuj plik `docker-compose.yml`, który umożliwi lokalne uruchomienie aplikacji z backendem, frontendem i bazą danych.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## Czas Realizacji
+
+Zadanie należy wykonać w ciągu **7 dni** od momentu jego otrzymania.
+
+---
+
+## Wynik Końcowy
+
+Kandydat powinien dostarczyć repozytorium GIT (np. link do GitHub/GitLab/Bitbucket), które zawiera:
+- Kod źródłowy backendu i frontendu.
+- Pliki konfiguracyjne Docker, CI/CD i migracji.
+- Plik README.md z instrukcjami uruchomienia projektu i pipeline’a CI/CD.
