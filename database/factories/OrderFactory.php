@@ -16,8 +16,6 @@ class OrderFactory extends Factory
     {
         return [
             'patient_id' => Patient::factory(),
-            'status' => $this->faker->randomElement(['pending', 'in_progress', 'completed', 'cancelled']),
-            'ordered_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
         ];
     }
 } 

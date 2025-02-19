@@ -11,13 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Order extends Model
 {
     protected $fillable = [
+        'id',
         'patient_id',
-        'status',
-        'ordered_at',
-    ];
-
-    protected $casts = [
-        'ordered_at' => 'datetime',
     ];
 
     public function patient(): BelongsTo

@@ -11,7 +11,6 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('order_id');
             $table->unsignedBigInteger('patient_id');
             $table->timestamps();
 

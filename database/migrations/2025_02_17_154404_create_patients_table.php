@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\Sex;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,8 +15,8 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('surname');
-            $table->string('sex', 1);
-            $table->date('birth_date');
+            $table->enum('sex', array_column(Sex::cases(), 'value'));
+            $table->date('date_of_birth');
             $table->timestamps();
         });
     }
