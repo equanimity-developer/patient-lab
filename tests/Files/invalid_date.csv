@@ -1,0 +1,4 @@
+patientId;patientName;patientSurname;patientSex;patientBirthDate;orderId;testName;testValue;testReference
+1;John;Doe;male;1990-01-01;1;Morfologia;14.5;12.0-16.0
+2;Jane;Smith;female;31-13-2023;2;Hemoglobina;15.2;14.0-18.0
+3;Mark;Johnson;male;invalid-date;3;Glukoza;5.5;4.0-6.0

@@ -1,0 +1,7 @@
+patientId;patientName;patientSurname;patientSex;patientBirthDate;orderId;testName;testValue;testReference
+
+1;Piotr;Kowalski;male;1983-04-12;1;Protoporfiryna cynkowa;4.0;< 40,0
+
+;;;;;;
+
+1;Piotr;Kowalski;male;1983-04-12;1;Wolna trijodotyronina (FT3) (O55);4.00;2,30 - 4,20

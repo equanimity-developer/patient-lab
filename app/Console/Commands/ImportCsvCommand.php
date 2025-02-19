@@ -20,7 +20,7 @@ class ImportCsvCommand extends Command
     protected $signature = 'import:csv {file : Path to the CSV file}';
     protected $description = 'Import patients and their results from a CSV file';
 
-    private const REQUIRED_HEADERS = [
+    private const array REQUIRED_HEADERS = [
         'patientId',
         'patientName',
         'patientSurname',
@@ -92,6 +92,7 @@ class ImportCsvCommand extends Command
         $csv = Reader::createFromPath($filePath, 'r');
         $csv->setDelimiter(';');
         $csv->setHeaderOffset(0);
+
         return $csv;
     }
 
@@ -148,9 +149,12 @@ class ImportCsvCommand extends Command
             ]
         );
 
-        Result::create([
-            'order_id' => $order->id,
-            'test_name' => $record['testName'],
+        Result::firstOrCreate(
+            [
+                'order_id' => $order->id,
+                'test_name' => $record['testName'],
+            ],
+            [
             'test_value' => $record['testValue'],
             'test_reference' => $record['testReference'],
         ]);
