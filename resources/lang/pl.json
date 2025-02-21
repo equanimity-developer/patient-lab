@@ -1,0 +1,19 @@
+{
+  "patient": {
+    "information": "Informacje o Pacjencie",
+    "name": "Imię i Nazwisko",
+    "sex": "Płeć",
+    "birthDate": "Data Urodzenia"
+  },
+  "results": {
+    "title": "Wyniki Badań",
+    "orderNumber": "Zlecenie #{number}",
+    "testName": "Nazwa Badania",
+    "value": "Wynik",
+    "referenceRange": "Zakres Referencyjny",
+    "noResults": "Nie znaleziono wyników."
+  },
+  "common": {
+    "loading": "Wczytywanie wyników..."
+  }
+} 

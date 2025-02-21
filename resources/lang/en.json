@@ -1,0 +1,19 @@
+{
+  "patient": {
+    "information": "Patient Information",
+    "name": "Name",
+    "sex": "Sex",
+    "birthDate": "Birth Date"
+  },
+  "results": {
+    "title": "Test Results",
+    "orderNumber": "Order #{number}",
+    "testName": "Test Name",
+    "value": "Value",
+    "referenceRange": "Reference Range",
+    "noResults": "No results found."
+  },
+  "common": {
+    "loading": "Loading results..."
+  }
+} 
