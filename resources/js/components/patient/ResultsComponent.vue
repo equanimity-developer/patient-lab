@@ -1,24 +1,50 @@
 <template>
   <div class="results-container">
-    <h2>Your Results</h2>
+    <!-- Patient Info Section -->
+    <div v-if="patient" class="patient-info">
+      <h2>{{ $t('patient.information') }}</h2>
+      <div class="patient-details">
+        <p><strong>{{ $t('patient.name') }}:</strong> {{ patient.name }} {{ patient.surname }}</p>
+        <p><strong>{{ $t('patient.sex') }}:</strong> {{ patient.sex }}</p>
+        <p><strong>{{ $t('patient.birthDate') }}:</strong> {{ formatDate(patient.birthDate) }}</p>
+      </div>
+    </div>
+
+    <h2>{{ $t('results.title') }}</h2>
 
     <div v-if="loading" class="loading">
-      Loading results...
+      {{ $t('common.loading') }}
     </div>
 
     <div v-else-if="error" class="alert alert-danger">
       {{ error }}
     </div>
 
-    <div v-else-if="results.length === 0" class="no-results">
-      No results found.
+    <div v-else-if="!orders?.length" class="no-results">
+      {{ $t('results.noResults') }}
     </div>
 
-    <div v-else class="results-list">
-      <div v-for="result in results" :key="result.id" class="result-item">
-        <h3>{{ result.title }}</h3>
-        <p>{{ result.description }}</p>
-        <p class="date">Date: {{ formatDate(result.created_at) }}</p>
+    <div v-else class="orders-list">
+      <div v-for="order in orders" :key="order.orderId" class="order-card">
+        <h3>{{ $t('results.orderNumber', { number: order.orderId }) }}</h3>
+        <div class="results-table">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ $t('results.testName') }}</th>
+                <th>{{ $t('results.value') }}</th>
+                <th>{{ $t('results.referenceRange') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(result, index) in order.results" :key="index">
+                <td>{{ result.name }}</td>
+                <td>{{ result.value }}</td>
+                <td>{{ result.reference }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -31,7 +57,8 @@ export default {
   name: 'ResultsComponent',
   data() {
     return {
-      results: [],
+      patient: null,
+      orders: [],
       loading: true,
       error: null
     }
@@ -48,7 +75,8 @@ export default {
             'Authorization': `Bearer ${token}`
           }
         });
-        this.results = response.data;
+        this.patient = response.data.patient;
+        this.orders = response.data.orders;
       } catch (error) {
         this.error = error.response?.data?.message || 'Error fetching results';
         if (error.response?.status === 401) {
@@ -59,7 +87,8 @@ export default {
       }
     },
     formatDate(date) {
-      return new Date(date).toLocaleDateString();
+      if (!date) return '';
+      return date.split('T')[0];
     }
   }
 }
@@ -78,26 +107,53 @@ export default {
   color: #666;
 }
 
-.results-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.result-item {
+.patient-info {
+  margin-bottom: 2rem;
   padding: 1rem;
-  border: 1px solid #ddd;
+  background-color: #f8f9fa;
   border-radius: 8px;
 }
 
-.result-item h3 {
-  margin: 0 0 0.5rem 0;
-  color: #333;
+.patient-details {
+  display: grid;
+  gap: 0.5rem;
 }
 
-.date {
-  color: #666;
-  font-size: 0.9rem;
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.order-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.results-table {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #f8f9fa;
 }
 
 .alert-danger {
