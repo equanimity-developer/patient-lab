@@ -46,6 +46,32 @@
           </table>
         </div>
       </div>
+
+      <!-- Add pagination controls -->
+      <div v-if="pagination" class="pagination">
+        <button
+          :disabled="!pagination.prev_page_url"
+          @click="changePage(pagination.current_page - 1)"
+          class="pagination-btn"
+        >
+          {{ $t('common.previous') }}
+        </button>
+
+        <span class="pagination-info">
+          {{ $t('pagination.page', {
+            current: pagination.current_page,
+            total: pagination.last_page
+          }) }}
+        </span>
+
+        <button
+          :disabled="!pagination.next_page_url"
+          @click="changePage(pagination.current_page + 1)"
+          class="pagination-btn"
+        >
+          {{ $t('common.next') }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -60,23 +86,25 @@ export default {
       patient: null,
       orders: [],
       loading: true,
-      error: null
+      error: null,
+      pagination: null
     }
   },
   created() {
     this.fetchResults();
   },
   methods: {
-    async fetchResults() {
+    async fetchResults(page = 1) {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('/api/results', {
+        const response = await axios.get(`/api/results?page=${page}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
         this.patient = response.data.patient;
         this.orders = response.data.orders;
+        this.pagination = response.data.pagination;
       } catch (error) {
         this.error = error.response?.data?.message || 'Error fetching results';
         if (error.response?.status === 401) {
@@ -85,6 +113,10 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    changePage(page) {
+      this.loading = true;
+      this.fetchResults(page);
     },
     formatDate(date) {
       if (!date) return '';
@@ -163,5 +195,35 @@ tr:hover {
   padding: 0.75rem;
   border-radius: 4px;
   margin-bottom: 1rem;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.pagination-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.pagination-btn:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.pagination-btn:not(:disabled):hover {
+  background-color: #f8f9fa;
+}
+
+.pagination-info {
+  color: #666;
 }
 </style>

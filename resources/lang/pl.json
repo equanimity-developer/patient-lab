@@ -14,6 +14,11 @@
     "noResults": "Nie znaleziono wyników."
   },
   "common": {
-    "loading": "Wczytywanie wyników..."
+    "loading": "Ładowanie wyników...",
+    "previous": "Poprzednia",
+    "next": "Następna"
+  },
+  "pagination": {
+    "page": "Strona {current} z {total}"
   }
 } 

@@ -16,9 +16,20 @@ class PatientResultsController extends Controller
         $patient = auth()->user();
         $patient->load('orders.results');
 
+        // Paginate orders, 10 per page
+        $paginatedOrders = $patient->orders()->paginate(5);
+
         return response()->json([
             'patient' => new PatientResource($patient),
-            'orders' => OrderResource::collection($patient->orders),
+            'orders' => OrderResource::collection($paginatedOrders),
+            'pagination' => [
+                'current_page' => $paginatedOrders->currentPage(),
+                'last_page' => $paginatedOrders->lastPage(),
+                'per_page' => $paginatedOrders->perPage(),
+                'total' => $paginatedOrders->total(),
+                'next_page_url' => $paginatedOrders->nextPageUrl(),
+                'prev_page_url' => $paginatedOrders->previousPageUrl(),
+            ],
         ]);
     }
 }
