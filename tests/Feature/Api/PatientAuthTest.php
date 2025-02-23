@@ -28,7 +28,7 @@ class PatientAuthTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-co                'token',
+                'token',
             ]);
     }
 
