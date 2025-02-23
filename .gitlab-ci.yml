@@ -10,8 +10,8 @@ stages:
 cache: &global_cache
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-    - backend/vendor/
-    - frontend/node_modules/
+    - vendor/
+    - node_modules/
   policy: pull-push
 
 phpunit_tests:
@@ -31,11 +31,10 @@ phpunit_tests:
   cache:
     <<: *global_cache
     paths:
-      - backend/vendor/
+      - vendor/
   before_script:
     - apt-get update && apt-get install -y zip unzip git
     - docker-php-ext-install pdo_mysql
-    - cd backend
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install --no-progress --no-interaction
     - cp .env.example .env
@@ -50,7 +49,8 @@ phpunit_tests:
     - php artisan test --testsuite=Feature
   rules:
     - changes:
-        - backend/**/*
+        - app/**/*
+        - tests/**/*
         - .gitlab-ci.yml
 
 vue_tests:
@@ -59,14 +59,13 @@ vue_tests:
   cache:
     <<: *global_cache
     paths:
-      - frontend/node_modules/
+      - node_modules/
   script:
-    - cd frontend
     - npm ci
     - npm run test:unit
   rules:
     - changes:
-        - frontend/**/*
+        - resources/js/**/*
         - .gitlab-ci.yml
 
 build_frontend:
@@ -75,14 +74,13 @@ build_frontend:
   cache:
     <<: *global_cache
     paths:
-      - frontend/node_modules/
+      - node_modules/
   script:
-    - cd frontend
     - npm ci
     - npm run build
   artifacts:
     paths:
-      - frontend/dist/
+      - public/build/
     expire_in: 1 week
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
