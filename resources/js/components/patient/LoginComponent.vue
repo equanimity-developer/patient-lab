@@ -41,9 +41,9 @@
 </template>
 
 <script>
-import axios from '../../utils/axios';
-import { setAuthToken, isAuthenticated } from '../../utils/auth';
-import { formatDateString, isValidDateFormat } from "../../utils/dateUtils.js";
+import axios from '@/utils/axios.js';
+import { setAuthToken, isAuthenticated } from '@/utils/auth.js';
+import { formatDateString, isValidDateFormat } from "@/utils/dateUtils.js";
 
 export default {
   name: 'LoginComponent',

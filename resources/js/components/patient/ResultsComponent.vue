@@ -78,8 +78,8 @@
 </template>
 
 <script>
-import axios from '../../utils/axios';
-import { handleLogout } from '../../utils/auth';
+import axios from '@/utils/axios.js';
+import { handleLogout } from '@/utils/auth.js';
 
 export default {
   name: 'ResultsComponent',

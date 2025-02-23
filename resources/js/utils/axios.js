@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { handleLogout } from './auth';
+import { handleLogout } from '@/utils/auth.js'
 
 const axiosInstance = axios.create({
   baseURL: '/',

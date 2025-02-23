@@ -1,4 +1,4 @@
-import router from '../router';
+import router from '@/router';
 
 export const handleLogout = () => {
   localStorage.removeItem('token');
@@ -15,4 +15,4 @@ export const isAuthenticated = () => {
 
 export const setAuthToken = (token) => {
   localStorage.setItem('token', token);
-}; 
+};
