@@ -9,7 +9,7 @@
       </div>
       <div class="patient-details">
         <p><strong>{{ $t('patient.name') }}:</strong> {{ patient.name }} {{ patient.surname }}</p>
-        <p><strong>{{ $t('patient.sex') }}:</strong> {{ patient.sex }}</p>
+        <p><strong>{{ $t('patient.sex.label') }}:</strong> {{ $t(`patient.sex.${patient.sex}`) }}</p>
         <p><strong>{{ $t('patient.birthDate') }}:</strong> {{ formatDate(patient.birthDate) }}</p>
       </div>
     </div>

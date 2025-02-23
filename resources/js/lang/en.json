@@ -2,7 +2,12 @@
   "patient": {
     "information": "Patient Information",
     "name": "Name",
-    "sex": "Sex",
+    "sex": {
+      "label": "Sex",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
     "birthDate": "Birth Date"
   },
   "auth": {

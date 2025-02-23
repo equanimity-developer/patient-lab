@@ -2,7 +2,12 @@
   "patient": {
     "information": "Informacje o Pacjencie",
     "name": "Imię i Nazwisko",
-    "sex": "Płeć",
+    "sex": {
+      "label": "Płeć",
+      "male": "Mężczyzna",
+      "female": "Kobieta",
+      "other": "Inna"
+    },
     "birthDate": "Data Urodzenia"
   },
   "auth": {
