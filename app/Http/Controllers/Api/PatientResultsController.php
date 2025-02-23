@@ -16,7 +16,6 @@ class PatientResultsController extends Controller
         $patient = auth()->user();
         $patient->load('orders.results');
 
-        // Paginate orders, 10 per page
         $paginatedOrders = $patient->orders()->paginate(5);
 
         return response()->json([

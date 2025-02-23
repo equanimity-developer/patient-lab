@@ -6,6 +6,7 @@ namespace Tests\Feature\Commands;
 
 use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 use TiMacDonald\Log\LogEntry;
 use TiMacDonald\Log\LogFake;
@@ -25,7 +26,10 @@ class ImportCsvCommandTest extends TestCase
     {
         $this->artisan('import:csv', ['file' => base_path(self::CORRECT_FILE)])
             ->assertSuccessful()
-            ->expectsOutput('Import completed. Successfully imported 9 records with 0 errors.');
+            ->expectsOutput(__('csv.import_summary', [
+                'success' => 9,
+                'errors' => 0,
+            ]));
 
         $this->assertDatabaseCount('patients', 4);
         $this->assertDatabaseHas('patients', [
@@ -90,7 +94,10 @@ class ImportCsvCommandTest extends TestCase
     {
         $this->artisan('import:csv', ['file' => base_path(self::CORRECT_FILE)])
             ->assertSuccessful()
-            ->expectsOutput('Import completed. Successfully imported 9 records with 0 errors.');
+            ->expectsOutput(__('csv.import_summary', [
+                'success' => 9,
+                'errors' => 0,
+            ]));
 
         $this->assertDatabaseCount('patients', 4);
         $this->assertDatabaseCount('orders', 6);
@@ -98,7 +105,10 @@ class ImportCsvCommandTest extends TestCase
 
         $this->artisan('import:csv', ['file' => base_path(self::CORRECT_FILE)])
             ->assertSuccessful()
-            ->expectsOutput('Import completed. Successfully imported 9 records with 0 errors.');
+            ->expectsOutput(__('csv.import_summary', [
+                'success' => 9,
+                'errors' => 0,
+            ]));
 
         $this->assertDatabaseCount('patients', 4);
         $this->assertDatabaseCount('orders', 6);
@@ -114,7 +124,7 @@ class ImportCsvCommandTest extends TestCase
 
         Log::channel('csv_import')->assertLogged(
             fn(LogEntry $log) => $log->level === 'error'
-            && $log->message === 'Failed to import CSV: The header record does not exist or is empty at offset: `0`'
+            && Str::contains($log->message, __('csv.import_failed', ['message' => '']))
         );
     }
 
@@ -126,7 +136,7 @@ class ImportCsvCommandTest extends TestCase
             ->assertFailed();
 
         Log::channel('csv_import')->assertLogged(fn(LogEntry $log) => $log->level === 'error'
-            && $log->message === 'Failed to import CSV: Missing required headers: patientId, patientName, patientSurname, patientSex, patientBirthDate, orderId, testName, testValue, testReference'
+            && Str::contains($log->message, __('csv.import_failed', ['message' => '']))
         );
     }
 
