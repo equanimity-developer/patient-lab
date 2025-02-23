@@ -80,6 +80,8 @@ build_and_push_docker:
     - docker:dind
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
+    WWWGROUP: "1000"
+    WWWUSER: "1000"
   before_script:
     - cp -r vendor/laravel/sail/runtimes/8.4/* .
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
