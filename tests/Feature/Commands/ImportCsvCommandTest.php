@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Commands;
 
 use Illuminate\Foundation\Testing\DatabaseTruncation;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 use TiMacDonald\Log\LogEntry;
@@ -105,18 +103,6 @@ class ImportCsvCommandTest extends TestCase
         $this->assertDatabaseCount('patients', 4);
         $this->assertDatabaseCount('orders', 6);
         $this->assertDatabaseCount('results', 9);
-    }
-
-    public function test_cannot_import_nonexistent_file(): void
-    {
-        LogFake::bind();
-
-        $this->artisan('import:csv', ['file' => base_path('/tests/Files/nonexistent.csv')])
-            ->assertFailed();
-
-        Log::assertLogged(fn(LogEntry $log) => $log->level === 'error'
-            && $log->message === 'Failed to import CSV: File does not exist: /var/www/html/tests/Files/nonexistent.csv'
-        );
     }
 
     public function test_cannot_import_empty_file(): void

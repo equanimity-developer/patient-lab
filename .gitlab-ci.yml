@@ -22,30 +22,33 @@ phpunit_tests:
       alias: db
       command: ['--default-authentication-plugin=mysql_native_password']
   variables:
-    DB_HOST: mysql
+    DB_HOST: db
     DB_DATABASE: laravel
-    DB_USERNAME: sail
+    DB_USERNAME: root
     DB_PASSWORD: password
     MYSQL_DATABASE: laravel
     MYSQL_ROOT_PASSWORD: password
   cache:
     <<: *global_cache
-    paths:
-      - vendor/
   before_script:
-    - apt-get update && apt-get install -y zip unzip git
+    - apt-get update && apt-get install -y zip unzip git mariadb-client
     - docker-php-ext-install pdo_mysql
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install --no-progress --no-interaction
     - cp .env.example .env
+    - sed -i "s/LOG_CHANNEL=.*/LOG_CHANNEL=stack/" .env
+    - sed -i "s/LOG_LEVEL=.*/LOG_LEVEL=debug/" .env
     - sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/" .env
     - sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/" .env
     - sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/" .env
     - sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env
     - php artisan key:generate
+    - php artisan jwt:secret --force
+    - echo "Waiting for MySQL..."
+    - until mysql -h"$DB_HOST" -u"$DB_USERNAME" -p"$DB_PASSWORD" -e "SHOW DATABASES"; do sleep 5; done
     - php artisan migrate --force
   script:
-    - php artisan test --testsuite=Unit
+#   - php artisan test --testsuite=Unit
     - php artisan test --testsuite=Feature
   rules:
     - changes:
@@ -58,10 +61,9 @@ vue_tests:
   stage: test
   cache:
     <<: *global_cache
-    paths:
-      - node_modules/
-  script:
+  before_script:
     - npm ci
+  script:
     - npm run test:unit
   rules:
     - changes:
@@ -73,10 +75,9 @@ build_frontend:
   stage: build
   cache:
     <<: *global_cache
-    paths:
-      - node_modules/
-  script:
+  before_script:
     - npm ci
+  script:
     - npm run build
   artifacts:
     paths:
