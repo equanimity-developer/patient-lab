@@ -1,11 +1,7 @@
-import './bootstrap';
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
-import i18n from './i18n';
-import axios from './utils/axios';
-
-window.axios = axios;
+import i18n from './plugins/i18n.js';
 
 const app = createApp(App);
 app.use(router);

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import LoginComponent from '../components/patient/LoginComponent.vue';
-import ResultsComponent from '../components/patient/ResultsComponent.vue';
+import LoginComponent from '@/components/patient/LoginComponent.vue';
+import ResultsComponent from '@/components/patient/ResultsComponent.vue';
 import { isAuthenticated } from '@/utils/auth.js';
 
 const routes = [
@@ -28,7 +28,6 @@ const router = createRouter({
   routes
 });
 
-// Navigation guard for protected routes
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !isAuthenticated()) {
     next('/login');
@@ -39,4 +38,4 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-export default router; 
+export default router;
