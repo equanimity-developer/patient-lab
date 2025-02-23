@@ -78,7 +78,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '../../utils/axios';
+import { handleLogout } from '../../utils/auth';
 
 export default {
   name: 'ResultsComponent',
@@ -97,20 +98,12 @@ export default {
   methods: {
     async fetchResults(page = 1) {
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`/api/results?page=${page}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const response = await axios.get(`/api/results?page=${page}`);
         this.patient = response.data.patient;
         this.orders = response.data.orders;
         this.pagination = response.data.pagination;
       } catch (error) {
         this.error = error.response?.data?.message || 'Error fetching results';
-        if (error.response?.status === 401) {
-          this.$router.push('/login');
-        }
       } finally {
         this.loading = false;
       }
@@ -124,8 +117,7 @@ export default {
       return date.split('T')[0];
     },
     logout() {
-      localStorage.removeItem('token');
-      this.$router.push('/login');
+      handleLogout();
     }
   }
 }

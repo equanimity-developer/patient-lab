@@ -41,13 +41,14 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { formatDateString, isValidDateFormat} from "../../utils/dateUtils.js";
+import axios from '../../utils/axios';
+import { setAuthToken, isAuthenticated } from '../../utils/auth';
+import { formatDateString, isValidDateFormat } from "../../utils/dateUtils.js";
 
 export default {
   name: 'LoginComponent',
   created() {
-    if (localStorage.getItem('token')) {
+    if (isAuthenticated()) {
       this.$router.push('/patient/results');
     }
   },
@@ -77,7 +78,7 @@ export default {
 
       try {
         const response = await axios.post('/api/login', this.form);
-        localStorage.setItem('token', response.data.token);
+        setAuthToken(response.data.token);
         this.$router.push('/patient/results');
       } catch (error) {
         this.error = error.response?.data?.message || this.$t('auth.login.errors.default');
