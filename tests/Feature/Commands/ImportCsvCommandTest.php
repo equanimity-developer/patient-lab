@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Commands;
 
+use Illuminate\Foundation\Testing\DatabaseTruncation;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
@@ -12,24 +14,14 @@ use TiMacDonald\Log\LogFake;
 
 class ImportCsvCommandTest extends TestCase
 {
+    use DatabaseTruncation;
+
     private const string CORRECT_FILE = '/tests/Files/correct.csv';
     private const string EMPTY_FILE = '/tests/Files/empty.csv';
     private const string INVALID_FORMAT_FILE = '/tests/Files/invalid_format.csv';
     private const string MISSING_REQUIRED_FIELDS_FILE = '/tests/Files/missing_required_fields.csv';
     private const string INVALID_DATE_FILE = '/tests/Files/invalid_date.csv';
     private const string INVALID_SEX_FILE = '/tests/Files/invalid_sex.csv';
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // Disable foreign key checks before truncating tables, RefreshDatabase didn't work as expected
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('patients')->truncate();
-        DB::table('orders')->truncate();
-        DB::table('results')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-    }
 
     public function test_can_import_csv_file(): void
     {

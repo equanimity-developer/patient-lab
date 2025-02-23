@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Feature\Api;
 
 use App\Models\Patient;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PatientAuthTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTruncation;
 
     public function test_patient_can_login_with_valid_credentials(): void
     {

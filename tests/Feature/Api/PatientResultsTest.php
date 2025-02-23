@@ -5,12 +5,12 @@ namespace Tests\Feature\Api;
 use App\Models\Order;
 use App\Models\Patient;
 use App\Models\Result;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Tests\TestCase;
 
 class PatientResultsTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTruncation;
 
     public function test_patient_can_get_their_results(): void
     {
