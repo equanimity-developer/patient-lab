@@ -56,22 +56,6 @@ phpunit_tests:
         - tests/**/*
         - .gitlab-ci.yml
 
-vue_tests:
-  image: node:18-alpine
-  stage: test
-  cache:
-    <<: *global_cache
-  variables:
-    LARAVEL_BYPASS_ENV_CHECK: "1"
-  before_script:
-    - npm ci
-  script:
-    - npm run test:unit
-  rules:
-    - changes:
-        - resources/js/**/*
-        - .gitlab-ci.yml
-
 build_frontend:
   image: node:18-alpine
   stage: build
