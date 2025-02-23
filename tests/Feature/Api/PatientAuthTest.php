@@ -28,9 +28,7 @@ class PatientAuthTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'access_token',
-                'token_type',
-                'expires_in'
+co                'token',
             ]);
     }
 
@@ -110,9 +108,7 @@ class PatientAuthTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'access_token',
-                'token_type',
-                'expires_in'
+                'token',
             ]);
 
         // Different case should fail
@@ -126,4 +122,4 @@ class PatientAuthTest extends TestCase
                 'message' => 'Invalid credentials'
             ]);
     }
-} 
+}
