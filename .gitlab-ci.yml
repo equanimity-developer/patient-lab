@@ -1,0 +1,110 @@
+default:
+  retry: 2
+  interruptible: true
+
+stages:
+  - test
+  - build
+  - deploy
+
+cache: &global_cache
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - backend/vendor/
+    - frontend/node_modules/
+  policy: pull-push
+
+phpunit_tests:
+  image: php:8.3-fpm
+  stage: test
+  services:
+    - name: mysql:5.7
+      alias: db
+      command: ['--default-authentication-plugin=mysql_native_password']
+  variables:
+    DB_HOST: mysql
+    DB_DATABASE: laravel
+    DB_USERNAME: sail
+    DB_PASSWORD: password
+    MYSQL_DATABASE: laravel
+    MYSQL_ROOT_PASSWORD: password
+  cache:
+    <<: *global_cache
+    paths:
+      - backend/vendor/
+  before_script:
+    - apt-get update && apt-get install -y zip unzip git
+    - docker-php-ext-install pdo_mysql
+    - cd backend
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install --no-progress --no-interaction
+    - cp .env.example .env
+    - sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/" .env
+    - sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/" .env
+    - sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/" .env
+    - sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env
+    - php artisan key:generate
+    - php artisan migrate --force
+  script:
+    - php artisan test --testsuite=Unit
+    - php artisan test --testsuite=Feature
+  rules:
+    - changes:
+        - backend/**/*
+        - .gitlab-ci.yml
+
+vue_tests:
+  image: node:18-alpine
+  stage: test
+  cache:
+    <<: *global_cache
+    paths:
+      - frontend/node_modules/
+  script:
+    - cd frontend
+    - npm ci
+    - npm run test:unit
+  rules:
+    - changes:
+        - frontend/**/*
+        - .gitlab-ci.yml
+
+build_frontend:
+  image: node:18-alpine
+  stage: build
+  cache:
+    <<: *global_cache
+    paths:
+      - frontend/node_modules/
+  script:
+    - cd frontend
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - frontend/dist/
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+build_and_push_docker:
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
+    - |
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+        docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+      fi
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
