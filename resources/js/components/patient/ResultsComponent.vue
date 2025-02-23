@@ -1,6 +1,5 @@
 <template>
   <div class="results-container">
-    <!-- Patient Info Section -->
     <div v-if="patient" class="patient-info">
       <h2>{{ $t('patient.information') }}</h2>
       <div class="patient-details">
@@ -8,6 +7,9 @@
         <p><strong>{{ $t('patient.sex') }}:</strong> {{ patient.sex }}</p>
         <p><strong>{{ $t('patient.birthDate') }}:</strong> {{ formatDate(patient.birthDate) }}</p>
       </div>
+      <button @click="logout" class="logout-btn">
+        {{ $t('auth.logout') }}
+      </button>
     </div>
 
     <h2>{{ $t('results.title') }}</h2>
@@ -47,7 +49,6 @@
         </div>
       </div>
 
-      <!-- Add pagination controls -->
       <div v-if="pagination" class="pagination">
         <button
           :disabled="!pagination.prev_page_url"
@@ -121,6 +122,10 @@ export default {
     formatDate(date) {
       if (!date) return '';
       return date.split('T')[0];
+    },
+    logout() {
+      localStorage.removeItem('token');
+      this.$router.push('/login');
     }
   }
 }
@@ -225,5 +230,20 @@ tr:hover {
 
 .pagination-info {
   color: #666;
+}
+
+.logout-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
 }
 </style>

@@ -3,7 +3,9 @@
     "information": "Patient Information",
     "name": "Name",
     "sex": "Sex",
-    "birthDate": "Birth Date",
+    "birthDate": "Birth Date"
+  },
+  "auth": {
     "login": {
       "title": "Patient Login",
       "loginLabel": "Login",
@@ -16,7 +18,8 @@
         "invalidDate": "Please enter a valid date in YYYY-MM-DD format",
         "default": "An error occurred during login"
       }
-    }
+    },
+    "logout": "Logout"
   },
   "results": {
     "title": "Test Results",

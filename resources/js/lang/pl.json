@@ -3,20 +3,23 @@
     "information": "Informacje o Pacjencie",
     "name": "Imię i Nazwisko",
     "sex": "Płeć",
-    "birthDate": "Data Urodzenia",
+    "birthDate": "Data Urodzenia"
+  },
+  "auth": {
     "login": {
       "title": "Logowanie Pacjenta",
       "loginLabel": "Login",
       "loginPlaceholder": "Wprowadź login",
       "birthDateLabel": "Data urodzenia (RRRR-MM-DD)",
       "birthDatePlaceholder": "RRRR-MM-DD",
-      "button": "Zaloguj",
+      "submitButton": "Zaloguj",
       "loading": "Ładowanie...",
       "errors": {
         "invalidDate": "Wprowadź poprawną datę w formacie RRRR-MM-DD",
         "default": "Wystąpił błąd podczas logowania"
       }
-    }
+    },
+    "logout": "Wyloguj"
   },
   "results": {
     "title": "Wyniki Badań",

@@ -1,29 +1,29 @@
 <template>
   <div class="login-container">
     <form @submit.prevent="login" class="login-form">
-      <h2>{{ $t('patient.login.title') }}</h2>
+      <h2>{{ $t('auth.login.title') }}</h2>
 
       <div class="form-group">
-        <label for="login">{{ $t('patient.login.loginLabel') }}</label>
+        <label for="login">{{ $t('auth.login.loginLabel') }}</label>
         <input
           type="text"
           id="login"
           v-model="form.login"
           required
           class="form-control"
-          :placeholder="$t('patient.login.loginPlaceholder')"
+          :placeholder="$t('auth.login.loginPlaceholder')"
         >
       </div>
 
       <div class="form-group">
-        <label for="password">{{ $t('patient.login.birthDateLabel') }}</label>
+        <label for="password">{{ $t('auth.login.birthDateLabel') }}</label>
         <input
           type="text"
           id="password"
           v-model="form.password"
           required
           class="form-control"
-          :placeholder="$t('patient.login.birthDatePlaceholder')"
+          :placeholder="$t('auth.login.birthDatePlaceholder')"
           maxlength="10"
           @input="formatBirthDate"
         >
@@ -34,7 +34,7 @@
       </div>
 
       <button type="submit" class="btn btn-primary" :disabled="loading">
-        {{ loading ? $t('patient.login.loading') : $t('patient.login.submitButton') }}
+        {{ loading ? $t('auth.login.loading') : $t('auth.login.submitButton') }}
       </button>
     </form>
   </div>
@@ -46,6 +46,11 @@ import { formatDateString, isValidDateFormat} from "../../utils/dateUtils.js";
 
 export default {
   name: 'LoginComponent',
+  created() {
+    if (localStorage.getItem('token')) {
+      this.$router.push('/patient/results');
+    }
+  },
   data() {
     return {
       form: {
@@ -65,7 +70,7 @@ export default {
       this.error = null;
 
       if (!isValidDateFormat(this.form.password)) {
-        this.error = this.$t('login.errors.invalidDate');
+        this.error = this.$t('auth.login.errors.invalidDate');
         this.loading = false;
         return;
       }
@@ -75,7 +80,7 @@ export default {
         localStorage.setItem('token', response.data.token);
         this.$router.push('/patient/results');
       } catch (error) {
-        this.error = error.response?.data?.message || this.$t('login.errors.default');
+        this.error = error.response?.data?.message || this.$t('auth.login.errors.default');
       } finally {
         this.loading = false;
       }
