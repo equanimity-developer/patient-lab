@@ -6,18 +6,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Patient;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\PatientLoginRequest;
 
 class PatientAuthController extends Controller
 {
-    public function login(Request $request): JsonResponse
+    public function login(PatientLoginRequest $request): JsonResponse
     {
-        $request->validate([
-            'login' => 'required|string',
-            'password' => 'required|string|date',
-        ]);
-
         $patient = Patient::whereRaw(
             "BINARY CONCAT(name, surname) = ?",
             [$request->login]
@@ -25,7 +20,7 @@ class PatientAuthController extends Controller
 
         if (!$patient || $patient->date_of_birth->format('Y-m-d') !== $request->password) {
             return response()->json([
-                'message' => 'Invalid credentials'
+                'message' => __('auth.invalid_credentials')
             ], 401);
         }
 

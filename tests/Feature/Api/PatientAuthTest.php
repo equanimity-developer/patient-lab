@@ -48,7 +48,7 @@ class PatientAuthTest extends TestCase
 
         $response->assertStatus(401)
             ->assertJson([
-                'message' => 'Invalid credentials'
+                'message' => __('auth.invalid_credentials')
             ]);
     }
 
@@ -68,7 +68,7 @@ class PatientAuthTest extends TestCase
 
         $response->assertStatus(401)
             ->assertJson([
-                'message' => 'Invalid credentials'
+                'message' => __('auth.invalid_credentials')
             ]);
     }
 
@@ -119,7 +119,7 @@ class PatientAuthTest extends TestCase
 
         $response->assertStatus(401)
             ->assertJson([
-                'message' => 'Invalid credentials'
+                'message' => __('auth.invalid_credentials')
             ]);
     }
 }
