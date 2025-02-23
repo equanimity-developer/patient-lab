@@ -112,7 +112,8 @@ class ImportCsvCommandTest extends TestCase
         $this->artisan('import:csv', ['file' => base_path(self::EMPTY_FILE)])
             ->assertFailed();
 
-        Log::assertLogged(fn(LogEntry $log) => $log->level === 'error'
+        Log::channel('csv_import')->assertLogged(
+            fn(LogEntry $log) => $log->level === 'error'
             && $log->message === 'Failed to import CSV: The header record does not exist or is empty at offset: `0`'
         );
     }
@@ -124,7 +125,7 @@ class ImportCsvCommandTest extends TestCase
         $this->artisan('import:csv', ['file' => base_path(self::INVALID_FORMAT_FILE)])
             ->assertFailed();
 
-        Log::assertLogged(fn(LogEntry $log) => $log->level === 'error'
+        Log::channel('csv_import')->assertLogged(fn(LogEntry $log) => $log->level === 'error'
             && $log->message === 'Failed to import CSV: Missing required headers: patientId, patientName, patientSurname, patientSex, patientBirthDate, orderId, testName, testValue, testReference'
         );
     }

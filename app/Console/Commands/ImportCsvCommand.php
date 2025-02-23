@@ -57,22 +57,19 @@ class ImportCsvCommand extends Command
                 } catch (Throwable $e) {
                     $errorCount++;
                     $this->logImportError($index + 2, $e);
-
-                    if ($errorCount > 100) {
-                        throw new Exception(__('csv.too_many_errors'));
-                    }
                 }
             }
 
             DB::commit();
             $this->displaySummary($successCount, $errorCount);
+            Log::channel('csv_import')->info(__('csv.import_summary_log'));
 
-            return 0;
+            return Command::SUCCESS;
         } catch (Throwable $e) {
             DB::rollBack();
             $this->handleFatalError($e);
 
-            return 1;
+            return Command::FAILURE;
         }
     }
 
@@ -168,7 +165,7 @@ class ImportCsvCommand extends Command
         ]);
 
         $this->error($message);
-        Log::error($message, [
+        Log::channel('csv_import')->error($message, [
             'exception' => $e,
             'line' => $line,
         ]);
@@ -178,9 +175,7 @@ class ImportCsvCommand extends Command
     {
         $message = __('csv.import_failed', ['message' => $e->getMessage()]);
         $this->error($message);
-        Log::error($message, [
-            'exception' => $e,
-        ]);
+        Log::channel('csv_import')->error($message);
     }
 
     private function displaySummary(int $successCount, int $errorCount): void
