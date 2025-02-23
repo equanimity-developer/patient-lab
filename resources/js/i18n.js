@@ -4,7 +4,7 @@ import en from './lang/en.json'
 
 export default createI18n({
     legacy: false,
-    locale: 'pl',
+    locale: import.meta.env.VITE_APP_LOCALE || 'en',
     fallbackLocale: 'en',
     messages: {
         pl,

@@ -1,29 +1,29 @@
 <template>
   <div class="login-container">
     <form @submit.prevent="login" class="login-form">
-      <h2>Patient Login</h2>
-      
+      <h2>{{ $t('patient.login.title') }}</h2>
+
       <div class="form-group">
-        <label for="login">Login</label>
-        <input 
-          type="text" 
-          id="login" 
-          v-model="form.login" 
-          required 
+        <label for="login">{{ $t('patient.login.loginLabel') }}</label>
+        <input
+          type="text"
+          id="login"
+          v-model="form.login"
+          required
           class="form-control"
-          placeholder="Enter your login"
+          :placeholder="$t('patient.login.loginPlaceholder')"
         >
       </div>
 
       <div class="form-group">
-        <label for="password">Birth Date (YYYY-MM-DD)</label>
-        <input 
-          type="text" 
-          id="password" 
-          v-model="form.password" 
-          required 
+        <label for="password">{{ $t('patient.login.birthDateLabel') }}</label>
+        <input
+          type="text"
+          id="password"
+          v-model="form.password"
+          required
           class="form-control"
-          placeholder="YYYY-MM-DD"
+          :placeholder="$t('patient.login.birthDatePlaceholder')"
           maxlength="10"
           @input="formatBirthDate"
         >
@@ -34,7 +34,7 @@
       </div>
 
       <button type="submit" class="btn btn-primary" :disabled="loading">
-        {{ loading ? 'Loading...' : 'Login' }}
+        {{ loading ? $t('patient.login.loading') : $t('patient.login.submitButton') }}
       </button>
     </form>
   </div>
@@ -42,6 +42,7 @@
 
 <script>
 import axios from 'axios';
+import { formatDateString, isValidDateFormat} from "../../utils/dateUtils.js";
 
 export default {
   name: 'LoginComponent',
@@ -57,43 +58,24 @@ export default {
   },
   methods: {
     formatBirthDate() {
-      // Remove any non-digit characters
-      let value = this.form.password.replace(/\D/g, '');
-      
-      // Format as YYYY-MM-DD
-      if (value.length > 0) {
-        // Handle year
-        if (value.length > 4) {
-          value = value.slice(0, 4) + '-' + value.slice(4);
-        }
-        // Handle month
-        if (value.length > 7) {
-          value = value.slice(0, 7) + '-' + value.slice(7);
-        }
-        // Limit to 10 characters (YYYY-MM-DD)
-        value = value.slice(0, 10);
-      }
-      
-      this.form.password = value;
+      this.form.password = formatDateString(this.form.password);
     },
     async login() {
       this.loading = true;
       this.error = null;
-      
-      // Validate date format before submitting
-      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-      if (!dateRegex.test(this.form.password)) {
-        this.error = 'Please enter a valid date in YYYY-MM-DD format';
+
+      if (!isValidDateFormat(this.form.password)) {
+        this.error = this.$t('login.errors.invalidDate');
         this.loading = false;
         return;
       }
-      
+
       try {
         const response = await axios.post('/api/login', this.form);
         localStorage.setItem('token', response.data.token);
         this.$router.push('/patient/results');
       } catch (error) {
-        this.error = error.response?.data?.message || 'An error occurred during login';
+        this.error = error.response?.data?.message || this.$t('login.errors.default');
       } finally {
         this.loading = false;
       }
@@ -156,4 +138,4 @@ export default {
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
-</style> 
+</style>
