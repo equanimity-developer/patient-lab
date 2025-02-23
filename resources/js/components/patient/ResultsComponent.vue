@@ -1,15 +1,17 @@
 <template>
   <div class="results-container">
     <div v-if="patient" class="patient-info">
-      <h2>{{ $t('patient.information') }}</h2>
+      <div class="patient-header">
+        <h2>{{ $t('patient.information') }}</h2>
+        <button @click="logout" class="logout-btn">
+          {{ $t('auth.logout') }}
+        </button>
+      </div>
       <div class="patient-details">
         <p><strong>{{ $t('patient.name') }}:</strong> {{ patient.name }} {{ patient.surname }}</p>
         <p><strong>{{ $t('patient.sex') }}:</strong> {{ patient.sex }}</p>
         <p><strong>{{ $t('patient.birthDate') }}:</strong> {{ formatDate(patient.birthDate) }}</p>
       </div>
-      <button @click="logout" class="logout-btn">
-        {{ $t('auth.logout') }}
-      </button>
     </div>
 
     <h2>{{ $t('results.title') }}</h2>
@@ -143,6 +145,13 @@ export default {
   border-radius: 8px;
 }
 
+.patient-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 .patient-details {
   display: grid;
   gap: 0.5rem;
@@ -225,7 +234,6 @@ tr:hover {
 }
 
 .logout-btn {
-  margin-top: 1rem;
   padding: 0.5rem 1rem;
   background-color: #dc3545;
   color: white;
