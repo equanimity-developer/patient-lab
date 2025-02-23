@@ -61,6 +61,8 @@ vue_tests:
   stage: test
   cache:
     <<: *global_cache
+  variables:
+    LARAVEL_BYPASS_ENV_CHECK: "1"
   before_script:
     - npm ci
   script:
