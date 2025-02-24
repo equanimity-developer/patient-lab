@@ -15,7 +15,7 @@ cache: &global_cache
   policy: pull-push
 
 phpunit_tests:
-  image: $CI_REGISTRY_IMAGE:latest
+  image: php:8.3-fpm
   stage: test
   services:
     - name: mysql:5.7
@@ -48,7 +48,6 @@ phpunit_tests:
     - until mysql -h"$DB_HOST" -u"$DB_USERNAME" -p"$DB_PASSWORD" -e "SHOW DATABASES"; do sleep 5; done
     - php artisan migrate --force
   script:
-#   - php artisan test --testsuite=Unit
     - php artisan test --testsuite=Feature
   rules:
     - changes:
