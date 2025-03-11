@@ -1,15 +1,15 @@
-# Instrukcja instalacji projektu Patient Lab
+# Patient Lab Project Installation Guide
 
 ---
 
-## 1. Klonowanie Repozytorium
-Skopiowanie repozytorium
+## 1. Repository Cloning
+Clone the repository
 ```bash
 git clone https://github.com/equanimity-developer/patient-lab.git
 cd patient-lab
 ```
 
-## 2. Instalacja Laravel Sail
+## 2. Laravel Sail Installation
 
 ```bash
 docker run --rm \
@@ -20,67 +20,67 @@ docker run --rm \
     composer install --ignore-platform-reqs
 ```
 
-## 3. Konfiguracja środowiska
+## 3. Environment Configuration
 
-Utworzenie `.env`
+Create `.env` file
 ```bash
 cp .env.example .env
 ```
 
-Zbudowanie aplikacji
+Build the application
 ```bash
 ./vendor/bin/sail build
 ```
 
-Uruchomienie aplikacji
+Run the application
 ```bash
 ./vendor/bin/sail up -d
 ```
 
-Wygenerowanie klucza aplikacji
+Generate application key
 ```bash
 ./vendor/bin/sail artisan key:generate
 ```
 
-Uruchomienie migracji
+Run migrations
 ```bash
 ./vendor/bin/sail artisan migrate
 ```
 
-Wygenerowanie tokenu dla JWT
+Generate JWT token
 ```bash
 ./vendor/bin/sail artisan jwt:secret
 ```
 
-## 4. Instalacja zależności Frontend
+## 4. Frontend Dependencies Installation
 
-Instalacja zależności
+Install dependencies
 ```bash
 ./vendor/bin/sail npm install
 ```
 
-Uruchomienie frontu
+Run frontend
 ```bash
 ./vendor/bin/sail npm run dev
 ```
 
-## 5. Użytkowanie aplikacji
-Aplikacja jest już gotowa i dostępna pod domyślnym adresem http://localhost/
+## 5. Using the Application
+The application is now ready and available at the default address http://localhost/
 
-Ponieważ baza danych jest jeszcze pusta, można uruchomić główną funkcjonalność - import wyników laboratoryjnych.
+Since the database is still empty, you can run the main functionality - import laboratory results.
 ```bash
 ./vendor/bin/sail artisan import:csv tests/Files/correct.csv
 ```
 
-Teraz można zalogować się na konto pacjenta, np. poprzez dane:
+Now you can log in to a patient account, for example with the following data:
 ```
 URL: http://localhost/login
 Login: PiotrKowalski
-Hasło: 1983-04-12
+Password: 1983-04-12
 ```
 
-Język aplikacji można zmienić poprzez zmienne w env:
+The application language can be changed through environment variables:
 ```
-VITE_APP_LOCALE - front
+VITE_APP_LOCALE - frontend
 APP_LOCALE - backend
 ```
